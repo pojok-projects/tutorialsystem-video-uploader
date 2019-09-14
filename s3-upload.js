@@ -112,6 +112,8 @@ app.post('/upload', multipartyMiddleware, function (req, res) {
                 UploadId: multipart.UploadId
             };
 
+            console.log('doneParams', JSON.stringify(doneParams));
+
             console.log('Completing upload...');
             completeMultipartUpload(s3, doneParams);
         }).on('httpUploadProgress', function (progress) {

@@ -1,89 +1,52 @@
-import * as path from "path";
 import * as express from "express";
 import * as bodyParser from "body-parser";
 import * as cors from "cors";
 import * as awsServerlessExpressMiddleware from "aws-serverless-express/middleware";
+import * as dotenv from "dotenv";
+import * as AWS from "aws-sdk";
+import { Server } from "http";
+import { UploadHelper } from "./lib/UploadHelper";
+import { responseHelper } from "./lib/ResponseHelper";
+
 const app = express();
 const router = express.Router();
+const multiparty = require("connect-multiparty");
+const multipartyMiddleware = multiparty();
 
+dotenv.config();
 router.use(cors());
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(awsServerlessExpressMiddleware.eventContext());
 
-// NOTE: tests can't find the views directory without this
-app.set("views", path.join(__dirname, "views"));
-
-router.get("/", (req, res) => {
-  res.json({ response: "ok" });
+AWS.config.update({
+  accessKeyId: process.env.AWS_ACCESS_KEY,
+  secretAccessKey: process.env.AWS_SECRET_KEY
 });
 
-router.get("/sam", (req, res) => {
-  res.sendFile(`${__dirname}/sam-logo.png`);
+router.get("/health-check", (req, res) => responseHelper(req, res, 200, "ok"));
+
+router.all("/*", (req, res) =>
+  responseHelper(req, res, 522, "Invalid Request")
+);
+
+app.post("/upload", multipartyMiddleware, (req: any, res) => {
+  const uploadHelper = new UploadHelper(req, res);
+  return uploadHelper.getFileSize() < 5000000
+    ? uploadHelper.smallUpload()
+    : uploadHelper.multipartUpload();
 });
 
-router.get("/vidu/users", (req, res) => {
-  res.json(users);
-});
-
-router.get("/users/:userId", (req, res) => {
-  const user = getUser(req.params.userId);
-
-  if (!user) {
-    return res.status(404).json({});
-  }
-
-  return res.json(user);
-});
-
-router.post("/users", (req, res) => {
-  const user = {
-    id: ++userIdCounter,
-    name: req.body.name
-  };
-  users.push(user);
-  res.status(201).json(user);
-});
-
-router.put("/users/:userId", (req, res) => {
-  const user = getUser(req.params.userId);
-
-  if (!user) {
-    return res.status(404).json({});
-  }
-
-  user.name = req.body.name;
-  return res.json(user);
-});
-
-router.delete("/users/:userId", (req, res) => {
-  const userIndex = getUserIndex(req.params.userId);
-
-  if (userIndex === -1) {
-    return res.status(404).json({});
-  }
-
-  users.splice(userIndex, 1);
-  return res.json(users);
-});
-
-const getUser = userId => users.find(u => u.id === parseInt(userId));
-const getUserIndex = userId => users.findIndex(u => u.id === parseInt(userId));
-
-// Ephemeral in-memory data store
-const users = [
-  {
-    id: 1,
-    name: "Joe"
-  },
-  {
-    id: 2,
-    name: "Jane"
-  }
-];
-let userIdCounter = users.length;
-
-app.listen(3000);
 app.use("/", router);
+
+if (process.env.NODE_ENV === "development") {
+  const server: Server = app.listen(process.env.PORT, () =>
+    console.log(
+      "Node express listening at http://%s:%s",
+      server.address().address,
+      server.address().port
+    )
+  );
+}
 
 module.exports = app;
