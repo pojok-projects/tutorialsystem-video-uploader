@@ -74,7 +74,7 @@ Resources:
       Runtime: nodejs10.x
       Role: !Sub ${rVideoUploaderLambdaExecutionRole.Arn}
       Code: source/.webpack
-      Handler: lambdas/VideoUploader.handler
+      Handler: lambda.handler
       MemorySize: 256
       Timeout: 900
       TracingConfig:

@@ -9,7 +9,7 @@ const externals = ['aws-sdk']
 
 module.exports = {
     entry: {
-        './lambdas/VideoUploader': './lambdas/VideoUploader.ts',
+        './lambda': './lambda.ts',
     },
     target: "node",
     externals,
