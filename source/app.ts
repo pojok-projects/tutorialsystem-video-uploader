@@ -1,8 +1,8 @@
-import path from 'path';
-import express from 'express';
-import bodyParser from 'body-parser';
-import cors from 'cors';
-import awsServerlessExpressMiddleware from 'aws-serverless-express/middleware';
+import * as path from 'path';
+import * as express from 'express';
+import * as bodyParser from 'body-parser';
+import * as cors from 'cors';
+import * as awsServerlessExpressMiddleware from 'aws-serverless-express/middleware';
 const app = express();
 const router = express.Router();
 
@@ -53,7 +53,7 @@ router.put('/users/:userId', (req, res) => {
   }
 
   user.name = req.body.name;
-  res.json(user);
+  return res.json(user);
 });
 
 router.delete('/users/:userId', (req, res) => {
@@ -64,7 +64,7 @@ router.delete('/users/:userId', (req, res) => {
   }
 
   users.splice(userIndex, 1);
-  res.json(users);
+  return res.json(users);
 });
 
 const getUser = userId => users.find(u => u.id === parseInt(userId));
