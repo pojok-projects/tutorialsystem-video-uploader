@@ -1,62 +1,67 @@
-"use strict";
-const path = require("path");
-const express = require("express");
-const bodyParser = require("body-parser");
-const cors = require("cors");
-const awsServerlessExpressMiddleware = require("aws-serverless-express/middleware");
+import path from 'path';
+import express from 'express';
+import bodyParser from 'body-parser';
+import cors from 'cors';
+import awsServerlessExpressMiddleware from 'aws-serverless-express/middleware';
 const app = express();
 const router = express.Router();
 
 router.use(cors());
 router.use(bodyParser.json());
-router.use(bodyParser.urlencoded({ extended: true }));
+router.use(bodyParser.urlencoded({extended: true}));
 router.use(awsServerlessExpressMiddleware.eventContext());
 
 // NOTE: tests can't find the views directory without this
-app.set("views", path.join(__dirname, "views"));
+app.set('views', path.join(__dirname, 'views'));
 
-router.get("/", (req, res) => {
-  res.json({ response: "ok" });
+router.get('/', (req, res) => {
+  res.json({response: 'ok'});
 });
 
-router.get("/sam", (req, res) => {
+router.get('/sam', (req, res) => {
   res.sendFile(`${__dirname}/sam-logo.png`);
 });
 
-router.get("/vidu/users", (req, res) => {
+router.get('/vidu/users', (req, res) => {
   res.json(users);
 });
 
-router.get("/users/:userId", (req, res) => {
+router.get('/users/:userId', (req, res) => {
   const user = getUser(req.params.userId);
 
-  if (!user) return res.status(404).json({});
+  if (!user) {
+    return res.status(404).json({});
+  }
 
   return res.json(user);
 });
 
-router.post("/users", (req, res) => {
+router.post('/users', (req, res) => {
   const user = {
     id: ++userIdCounter,
-    name: req.body.name
+    name: req.body.name,
   };
   users.push(user);
   res.status(201).json(user);
 });
 
-router.put("/users/:userId", (req, res) => {
+router.put('/users/:userId', (req, res) => {
   const user = getUser(req.params.userId);
 
-  if (!user) return res.status(404).json({});
+  if (!user) {
+    return res.status(404).json({});
+  }
 
   user.name = req.body.name;
   res.json(user);
 });
 
-router.delete("/users/:userId", (req, res) => {
+router.delete('/users/:userId', (req, res) => {
   const userIndex = getUserIndex(req.params.userId);
 
-  if (userIndex === -1) return res.status(404).json({});
+  if (userIndex === -1) {
+    return res.status(404).json({});
+  }
 
   users.splice(userIndex, 1);
   res.json(users);
@@ -69,19 +74,16 @@ const getUserIndex = userId => users.findIndex(u => u.id === parseInt(userId));
 const users = [
   {
     id: 1,
-    name: "Joe"
+    name: 'Joe1',
   },
   {
     id: 2,
-    name: "Jane"
-  }
+    name: 'Jane2',
+  },
 ];
 let userIdCounter = users.length;
 
-// The aws-serverless-express library creates a server and listens on a Unix
-// Domain Socket for you, so you can remove the usual call to app.listen.
 app.listen(3000);
-app.use("/", router);
+app.use('/', router);
 
-// Export your express server so you can import it in the lambda function.
 module.exports = app;
