@@ -28,7 +28,7 @@
     "typePatches"
   ],
   "include": [
-    "lambdas/**/*"
+    "lambda.ts"
   ],
   "exclude": [
     "dist",
