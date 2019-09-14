@@ -1,39 +1,27 @@
-import { APIGatewayEvent, Context, ProxyCallback } from "aws-lambda";
+"use strict";
+const awsServerlessExpress = require("aws-serverless-express");
+import app = require("./app");
 
-export async function handler(
-  event: APIGatewayEvent,
-  context: Context,
-  cb?: ProxyCallback
-) {
-  console.log("EVENT: ", event);
-  _sendResponse(
-    cb!,
-    200,
-    {
-      code: 200,
-      response: {
-        logStreamName: context.logStreamName
-      }
-    },
-    {}
-  );
-  return;
-}
+const binaryMimeTypes = [
+  "application/javascript",
+  "application/json",
+  "application/octet-stream",
+  "application/xml",
+  "font/eot",
+  "font/opentype",
+  "font/otf",
+  "image/jpeg",
+  "image/png",
+  "image/svg+xml",
+  "text/comma-separated-values",
+  "text/css",
+  "text/html",
+  "text/javascript",
+  "text/plain",
+  "text/text",
+  "text/xml"
+];
+const server = awsServerlessExpress.createServer(app, null, binaryMimeTypes);
 
-function _sendResponse(
-  cb: ProxyCallback,
-  statusCode: number,
-  result: any,
-  headers: { [k: string]: string }
-) {
-  headers["Cache-Control"] = "no-cache";
-
-  if (result.errors && result.errors.length) {
-    const body = JSON.stringify(result.errors, null, 2);
-    cb(null, { statusCode, body, headers });
-    return;
-  } else {
-    const body = JSON.stringify(result, null, 2);
-    cb(null, { statusCode, body, headers });
-  }
-}
+exports.handler = (event: any, context: any) =>
+  awsServerlessExpress.proxy(server, event, context);

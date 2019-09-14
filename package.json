@@ -1,5 +1,5 @@
 {
-  "dependencies": {
-    "aws-serverless-express": "^3.3.6"
+  "devDependencies": {
+    "@types/aws-serverless-express": "^3.3.1"
   }
 }
