@@ -374,7 +374,6 @@ Resources:
                 - aws cloudformation package --template-file solution.yaml --s3-bucket $S3Bucket --output-template-file solution.yaml
           artifacts:
             files: "**/*"
-            base-directory: source
       TimeoutInMinutes: 10
       Tags:
         - Key: Name
