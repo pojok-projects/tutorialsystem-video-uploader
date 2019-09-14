@@ -368,11 +368,9 @@ Resources:
                 - set -ex
                 - printenv
                 - ls -R
-                - cd source
                 - npm install -g yarn
                 - yarn install
                 - yarn build                
-                - cd -
                 - aws cloudformation package --template-file solution.yaml --s3-bucket $S3Bucket --output-template-file solution.yaml
           artifacts:
             files: "**/*"

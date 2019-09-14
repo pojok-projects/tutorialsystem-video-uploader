@@ -1,32 +1,32 @@
-import * as path from 'path';
-import * as express from 'express';
-import * as bodyParser from 'body-parser';
-import * as cors from 'cors';
-import * as awsServerlessExpressMiddleware from 'aws-serverless-express/middleware';
+import * as path from "path";
+import * as express from "express";
+import * as bodyParser from "body-parser";
+import * as cors from "cors";
+import * as awsServerlessExpressMiddleware from "aws-serverless-express/middleware";
 const app = express();
 const router = express.Router();
 
 router.use(cors());
 router.use(bodyParser.json());
-router.use(bodyParser.urlencoded({extended: true}));
+router.use(bodyParser.urlencoded({ extended: true }));
 router.use(awsServerlessExpressMiddleware.eventContext());
 
 // NOTE: tests can't find the views directory without this
-app.set('views', path.join(__dirname, 'views'));
+app.set("views", path.join(__dirname, "views"));
 
-router.get('/', (req, res) => {
-  res.json({response: 'ok'});
+router.get("/", (req, res) => {
+  res.json({ response: "ok" });
 });
 
-router.get('/sam', (req, res) => {
+router.get("/sam", (req, res) => {
   res.sendFile(`${__dirname}/sam-logo.png`);
 });
 
-router.get('/vidu/users', (req, res) => {
+router.get("/vidu/users", (req, res) => {
   res.json(users);
 });
 
-router.get('/users/:userId', (req, res) => {
+router.get("/users/:userId", (req, res) => {
   const user = getUser(req.params.userId);
 
   if (!user) {
@@ -36,16 +36,16 @@ router.get('/users/:userId', (req, res) => {
   return res.json(user);
 });
 
-router.post('/users', (req, res) => {
+router.post("/users", (req, res) => {
   const user = {
     id: ++userIdCounter,
-    name: req.body.name,
+    name: req.body.name
   };
   users.push(user);
   res.status(201).json(user);
 });
 
-router.put('/users/:userId', (req, res) => {
+router.put("/users/:userId", (req, res) => {
   const user = getUser(req.params.userId);
 
   if (!user) {
@@ -56,7 +56,7 @@ router.put('/users/:userId', (req, res) => {
   return res.json(user);
 });
 
-router.delete('/users/:userId', (req, res) => {
+router.delete("/users/:userId", (req, res) => {
   const userIndex = getUserIndex(req.params.userId);
 
   if (userIndex === -1) {
@@ -74,16 +74,16 @@ const getUserIndex = userId => users.findIndex(u => u.id === parseInt(userId));
 const users = [
   {
     id: 1,
-    name: 'Joe1',
+    name: "Joe"
   },
   {
     id: 2,
-    name: 'Jane2',
-  },
+    name: "Jane"
+  }
 ];
 let userIdCounter = users.length;
 
 app.listen(3000);
-app.use('/', router);
+app.use("/", router);
 
 module.exports = app;

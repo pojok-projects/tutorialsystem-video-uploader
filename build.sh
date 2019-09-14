@@ -6,7 +6,6 @@ set -x
 
 npm install -g yarn
 
-cd source
 rm -rf package-lock.json
 yarn install
 yarn build

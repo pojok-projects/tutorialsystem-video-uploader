@@ -8,11 +8,9 @@ var zlib = require('zlib'); // gzip compression
 var multiparty = require('connect-multiparty'),
     multipartyMiddleware = multiparty();
 
-var AWS_ACCESS_KEY = 'AKIA2I6NKHC6YAHWAK4X';
-var AWS_SECRET_KEY = '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';
 AWS.config.update({
-    accessKeyId: AWS_ACCESS_KEY,
-    secretAccessKey: AWS_SECRET_KEY
+    accessKeyId: process.env.AWS_ACCESS_KEY,
+    secretAccessKey: process.env.AWS_SECRET_KEY
 });
 AWS.config.region = 'ap-southeast-2';
 
