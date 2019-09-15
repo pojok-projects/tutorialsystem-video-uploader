@@ -1,14 +1,10 @@
 import * as express from "express";
 import { Server } from "http";
-import { responseHelper } from "./controllers/ResponseHelper";
-import { viduRouter } from "./routers/vidu";
-import { mainRouter } from "./routers/main";
+import { mainRouter } from "./routers";
 
 export const app = express();
 
 app.use("/", mainRouter);
-app.use("/vidu", viduRouter);
-app.all("/*", (req, res) => responseHelper(req, res, 422, "Invalid Request"));
 
 if (process.env.NODE_ENV === "development") {
   const server: Server = app.listen(process.env.PORT, () =>

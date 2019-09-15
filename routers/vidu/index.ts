@@ -1,4 +1,4 @@
-import { responseHelper } from "../controllers/ResponseHelper";
+import { responseHelper } from "../../controllers/ResponseHelper";
 import * as express from "express";
 import { v1Router } from "./v1";
 

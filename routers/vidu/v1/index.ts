@@ -1,4 +1,4 @@
-import { UploadHelper } from "../controllers/UploadHelper";
+import { UploadHelper } from "../../../controllers/UploadHelper";
 import * as express from "express";
 
 export const v1Router = express.Router();
