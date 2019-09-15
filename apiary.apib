@@ -1,80 +1,69 @@
 FORMAT: 1A
-HOST: http://polls.apiblueprint.org/
+HOST: https://api.tutorialinaja.tech/vidu
 
 # Tutorialinaja - Video Uploader
 
-Polls is a simple API allowing consumers to view polls and vote in them.
+DOCS Video Uploader Api
 
-## Questions Collection [/questions]
+## API Host
+* HOST: https://api.tutorialinaja.tech
 
-### List All Questions [GET]
+##Api Version
+* /vidu
+
+## API Main End Point
+* https://api.tutorialinaja.tech/vidu
+
+## Health Check [/health-check]
+___
+**Table Routes:**
+| URL             | Method | INFO                   |
+| ----------------| ------ | -----------------------|
+| `/health-check` | GET    | Check API status       |
+
+
+### Health Check [GET /health-check]
 
 + Response 200 (application/json)
 
-        [
-            {
-                "question": "Favourite programming language?",
-                "published_at": "2015-08-05T08:40:51.620Z",
-                "choices": [
-                    {
-                        "choice": "Swift",
-                        "votes": 2048
-                    }, {
-                        "choice": "Python",
-                        "votes": 1024
-                    }, {
-                        "choice": "Objective-C",
-                        "votes": 512
-                    }, {
-                        "choice": "Ruby",
-                        "votes": 256
-                    }
-                ]
-            }
-        ]
+        {
+            "code": 200,
+            "response": "ok",
+            "path": "/vidu/health-check",
+            "method": "GET"
+        }
+                
 
-### Create a New Question [POST]
 
-You may create your own question using this action. It takes a JSON
-object containing a question and a collection of answers in the
-form of choices.
+## Video Upload [/v1/upload]
+___
+**Table Routes:**
+| URL           | Method | INFO                                             |
+| --------------| ------ | -------------------------------------------------|
+| `/v1/upload`     | POST   | Upload Video File into media.tutorialinaja.tech  |
 
-+ Request (application/json)
+___
+**Upload Videos Parameter:**
+| Parameter    | type   | Status   | Description                   |
+| ------------ | ------ | -------- | ----------------------------- |
+| `file`       | binary | required | Binary file to be uploaded    |
+
+### Upload Videos [POST /v1/upload]
+
++ Parameter
+    + file (multipart/form-data; boundary=---BOUNDARY)
+
++ Response 200 (application/json)
 
         {
-            "question": "Favourite programming language?",
-            "choices": [
-                "Swift",
-                "Python",
-                "Objective-C",
-                "Ruby"
-            ]
+            "code": 200,
+            "response": {
+                "ETag": "\"4ea942dc1ad79e462a3e2926cb7f8b76\"",
+                "Location": "https://s3.ap-southeast-1.amazonaws.com/media.tutorialinaja.tech/Project.mp4",
+                "key": "Project.mp4",
+                "Key": "Project.mp4",
+                "Bucket": "media.tutorialinaja.tech"
+            },
+            "path": "/vidu/v1/upload",
+            "method": "POST"
         }
-
-+ Response 201 (application/json)
-
-    + Headers
-
-            Location: /questions/2
-
-    + Body
-
-            {
-                "question": "Favourite programming language?",
-                "published_at": "2015-08-05T08:40:51.620Z",
-                "choices": [
-                    {
-                        "choice": "Swift",
-                        "votes": 0
-                    }, {
-                        "choice": "Python",
-                        "votes": 0
-                    }, {
-                        "choice": "Objective-C",
-                        "votes": 0
-                    }, {
-                        "choice": "Ruby",
-                        "votes": 0
-                    }
-                ]
-            }
